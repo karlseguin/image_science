@@ -5,5 +5,10 @@ Rakefile
 bench.rb
 bin/image_science_thumb
 lib/image_science.rb
+test/bearry.png
+test/biggie.png
+test/godzilla.png
+test/landscape.png
 test/pix.png
+test/portrait.png
 test/test_image_science.rb

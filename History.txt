@@ -1,3 +1,8 @@
+=== 1.2.7 / 2010-05-26
+
+* removed redundant method cropped_to_fit
+* added image files for tests
+
 === 1.2.6 / 2010-05-26
 
 * Now based on ImageScience 1.2.1
