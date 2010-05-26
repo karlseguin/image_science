@@ -121,6 +121,25 @@ class ImageScience
     end
   end
 
+  ##
+  # Creates a square thumbnail of the image cropping the longest edge
+  # to match the shortest edge, resizes to +size+, and yields the new
+  # image.
+
+  def cropped_to_fit(width, height) # :yields: image
+    w, h = width, height
+    l, t, r, b, half = 0, 0, w, h, (w - h).abs / 2
+
+    l, r = half, half + h if w > h
+    t, b = half, half + w if h > w
+
+    with_crop(l, t, r, b) do |img|
+      img.thumbnail(size) do |thumb|
+        yield thumb
+      end
+    end
+  end
+
   inline do |builder|
     if test ?d, "/opt/local" then
       builder.add_compile_flags "-I/opt/local/include"
