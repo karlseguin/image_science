@@ -61,11 +61,11 @@ class TestImageScience < MiniTest::Unit::TestCase
   
   def test_class_with_image_missing_with_img_extension
 
-#    assert_raises RuntimeError do
+    assert_raises RuntimeError do
       assert_nil ImageScience.with_image("nope#{@pix}") do |img|
         flunk
       end
-#    end
+    end
   end
 
   def test_class_with_image_from_memory
@@ -114,7 +114,10 @@ class TestImageScience < MiniTest::Unit::TestCase
   def test_buffer_return
     ImageScience.with_image @pix do |img|
       img.resize(25, 25) do |thumb|
-        assert thumb.buffer('.jpg')
+#        assert thumb.buffer('.jpg')
+        thumb.buffer('.jpg') do |buffer|
+          assert buffer
+        end
       end
     end
   end
@@ -315,4 +318,23 @@ class TestImageScience < MiniTest::Unit::TestCase
       end
     }
   end
+
+  def test_resize_with_crop
+    images  = [@pix, @bearry, @biggie, @godzilla, @landscape, @portrait]
+    heights = [50, 450]
+    widths  = [80, 725]
+    images.each do |image_file|
+      ImageScience.with_image(image_file) do |img|
+        heights.each_with_index do |height, index|
+          width = widths[index]
+          img.resize_with_crop(width, height) do |resized_image|
+            assert(resized_image.nil? == false)
+            assert_equal(height, resized_image.height)
+            assert_equal(width, resized_image.width)
+          end
+        end
+      end
+    end
+  end
+
 end
