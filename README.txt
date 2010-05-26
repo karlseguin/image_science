@@ -11,6 +11,11 @@ g1nn13 fork changes:
 * added buffer() method to get image buffer for writing (to Amazon S3)
 * added fit_within() method to resize an image to fit within a specified
   height and width without changing the image's aspect ratio
+* added resize_with_crop() to resize and crop images where the
+  target aspect ratio differs from the original aspect ratio. This is
+  for converting portrait to landscape and landscape to portrait.
+
+
 
 ImageScience is a clean and happy Ruby library that generates
 thumbnails -- and kicks the living crap out of RMagick. Oh, and it
