@@ -57,79 +57,6 @@ class ImageScience
   def buffer(extension) # :yields: image
   end
 
-
-  ##
-  # Resizes an image to the specified size without stretching or
-  # compressing the original. If the aspect ratio of the new height/width
-  # does not match the aspect ratio of the original (as when converting
-  # portrait to landscape or landscape to portrait), the resulting
-  # image will be cropped. Cropping preserves the center of the image,
-  # with content trimmed evenly from the top and bottom and/or left and
-  # right edges of the image. This can cause some less than ideal 
-  # conversions. For example, converting a portrait to a landscape can
-  # result in the portrait's head being cut off.
-  
-  def resize_with_crop(width, height, &block)
-
-    # ---------------------------------------------------------------
-    # We want to adjust both height and width by the same ratio,
-    # so the image is not stretched. Adjust everything by the
-    # larger ratio, so that portrait to landscape and landscape
-    # to portrait transformations come out right.
-    # ---------------------------------------------------------------
-    src2target_height_ratio = height.to_f / self.height
-    src2target_width_ratio = width.to_f / self.width
-    height_ratio_is_larger = src2target_height_ratio > src2target_width_ratio
-    if height_ratio_is_larger
-      target_height = (self.height * src2target_height_ratio).round
-      target_width = (self.width * src2target_height_ratio).round
-    else
-      target_height = (self.height * src2target_width_ratio).round
-      target_width = (self.width * src2target_width_ratio).round
-    end
-    
-    # ---------------------------------------------------------------
-    # Create a version of this image whose longest
-    # side is equal to max_dimension. We'll add two
-    # to this value, since floating point arithmetic 
-    # often produces values 1-2 pixels short of what we want.
-    # ---------------------------------------------------------------
-    max_dimension = (target_height > target_width ? 
-                     target_height : target_width)
-    
-    self.thumbnail(max_dimension + 2) do |img1|
-      top, left = 0, 0      
-      top = (img1.height - height) / 2 unless img1.height < height      
-      left = (img1.width - width) / 2 unless img1.width < width
-      right = width + left
-      bottom = height + top
-
-      # ---------------------------------------------------------------
-      # Crop the resized image evenly at top/bottom, left/right,
-      # so that we preserve the center.
-      # ---------------------------------------------------------------
-      result = img1.with_crop(left, top, right, bottom) do |img2|
-        if block_given?
-          yield img2 
-        else
-          return img2
-        end
-      end      
-
-      if result.nil?
-        message = "Crop/resize failed... is some dimension is out of bounds?"
-        message += "Original Height = #{self.height}, Width = #{self.width}"
-        message += "Target Height   = #{height}, Width = #{width}"
-        message += "Actual Height   = #{self.height}, Width = #{self.width}"
-        message += "Left=#{left}, Top=#{top}, Right=#{right}, Bottom=#{bottom}"
-        raise message
-      end
-
-
-    end
-  end
-
-
   ##
   # Resizes the image to +width+ and +height+ using a cubic-bspline
   # filter and yields the new image.
@@ -197,20 +124,71 @@ class ImageScience
   end
 
   ##
-  # Creates a square thumbnail of the image cropping the longest edge
-  # to match the shortest edge, resizes to +size+, and yields the new
-  # image.
+  # Resizes an image to the specified size without stretching or
+  # compressing the original. If the aspect ratio of the new height/width
+  # does not match the aspect ratio of the original (as when converting
+  # portrait to landscape or landscape to portrait), the resulting
+  # image will be cropped. Cropping preserves the center of the image,
+  # with content trimmed evenly from the top and bottom and/or left and
+  # right edges of the image. This can cause some less than ideal
+  # conversions. For example, converting a portrait to a landscape can
+  # result in the portrait's head being cut off.
 
-  def cropped_to_fit(width, height) # :yields: image
-    w, h = width, height
-    l, t, r, b, half = 0, 0, w, h, (w - h).abs / 2
+  def resize_with_crop(width, height, &block)
 
-    l, r = half, half + h if w > h
-    t, b = half, half + w if h > w
+    # ---------------------------------------------------------------
+    # We want to adjust both height and width by the same ratio,
+    # so the image is not stretched. Adjust everything by the
+    # larger ratio, so that portrait to landscape and landscape
+    # to portrait transformations come out right.
+    # ---------------------------------------------------------------
+    src2target_height_ratio = height.to_f / self.height
+    src2target_width_ratio = width.to_f / self.width
+    height_ratio_is_larger = src2target_height_ratio > src2target_width_ratio
+    
+    if height_ratio_is_larger
+      target_height = (self.height * src2target_height_ratio).round
+      target_width = (self.width * src2target_height_ratio).round
+    else
+      target_height = (self.height * src2target_width_ratio).round
+      target_width = (self.width * src2target_width_ratio).round
+    end
 
-    with_crop(l, t, r, b) do |img|
-      img.thumbnail(size) do |thumb|
-        yield thumb
+    # ---------------------------------------------------------------
+    # Create a version of this image whose longest
+    # side is equal to max_dimension. We'll add two
+    # to this value, since floating point arithmetic
+    # often produces values 1-2 pixels short of what we want.
+    # ---------------------------------------------------------------
+    max_dimension = (target_height > target_width ?
+                     target_height : target_width)
+
+    self.thumbnail(max_dimension + 2) do |img1|
+      top, left = 0, 0
+      top = (img1.height - height) / 2 unless img1.height < height
+      left = (img1.width - width) / 2 unless img1.width < width
+      right = width + left
+      bottom = height + top
+
+      # ---------------------------------------------------------------
+      # Crop the resized image evenly at top/bottom, left/right,
+      # so that we preserve the center.
+      # ---------------------------------------------------------------
+      result = img1.with_crop(left, top, right, bottom) do |img2|
+        if block_given?
+          yield img2
+        else
+          return img2
+        end
+      end
+
+      if result.nil?
+        message = "Crop/resize failed... is some dimension is out of bounds?"
+        message += "Original Height = #{self.height}, Width = #{self.width}"
+        message += "Target Height   = #{height}, Width = #{width}"
+        message += "Actual Height   = #{self.height}, Width = #{self.width}"
+        message += "Left=#{left}, Top=#{top}, Right=#{right}, Bottom=#{bottom}"
+        raise message
       end
     end
   end
