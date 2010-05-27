@@ -114,23 +114,17 @@ class TestImageScience < MiniTest::Unit::TestCase
   def test_buffer_return
     ImageScience.with_image @pix do |img|
       img.resize(25, 25) do |thumb|
-#        assert thumb.buffer('.jpg')
+        buffer = thumb.buffer('.jpg')
+        assert buffer
+        assert buffer.length > 0
         thumb.buffer('.jpg') do |buffer|
           assert buffer
+          assert buffer.length > 0
         end
       end
     end
   end
 
-  def test_buffer_yield
-    ImageScience.with_image @pix do |img|
-      img.resize(25, 25) do |thumb|
-        thumb.buffer('.jpg') do |buffer|
-          assert buffer
-        end
-      end
-    end
-  end
 
   def test_resize_floats
     ImageScience.with_image @pix do |img|

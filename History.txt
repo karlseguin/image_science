@@ -1,6 +1,7 @@
 === 1.2.8 / 2010-05-27
 
 * re-added C code for buffer method. This was lost in the 1.2.6 merge.
+* added a clarifying comment to the docs for buffer() 
  
 === 1.2.7 / 2010-05-26
 

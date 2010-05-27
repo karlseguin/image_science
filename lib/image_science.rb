@@ -53,8 +53,9 @@ class ImageScience
   ##
   # Returns the image in a buffer (String). Changing the file
   # extension converts the file type to the appropriate format.
-
-  def buffer(extension) # :yields: image
+  # Note: *returns*! Does not yield!
+  
+  def buffer(extension) # :returns: string
   end
 
   ##
