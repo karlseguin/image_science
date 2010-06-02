@@ -1,3 +1,8 @@
+=== 1.2.9 / 2010-06-02
+
+* fixed a problem in resize_with_crop that sporadically raised an exception
+  when no exception had occurred.
+
 === 1.2.8 / 2010-05-27
 
 * re-added C code for buffer method. This was lost in the 1.2.6 merge.

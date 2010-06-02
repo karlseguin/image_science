@@ -13,7 +13,7 @@ require 'inline'
 # Based on ImageScience 1.2.1
 
 class ImageScience
-  VERSION = '1.2.8'
+  VERSION = '1.2.9'
 
   ##
   # The top-level image loader opens +path+ and then yields the image.
@@ -178,9 +178,8 @@ class ImageScience
       result = img1.with_crop(left, top, right, bottom) do |img2|
         if block_given?
           yield img2
-        else
-          return img2
         end
+        img2
       end
 
       if result.nil?
