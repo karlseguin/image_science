@@ -1,3 +1,9 @@
+=== 1.2.10 / 2011-08-10
+
+* Changed hard-coded jpeg image quality from JPEG_QUALITYSUPERB to
+  JPEG_QUALITYGOOD in the save method. This only affects saving jpeg
+  images to disk.
+
 === 1.2.9 / 2010-06-02
 
 * fixed a problem in resize_with_crop that sporadically raised an exception
