@@ -13,7 +13,7 @@ require 'inline'
 # Based on ImageScience 1.2.1
 
 class ImageScience
-  VERSION = '1.2.9'
+  VERSION = '1.2.10'
 
   ##
   # The top-level image loader opens +path+ and then yields the image.
