@@ -119,7 +119,6 @@ class ImageScience
     end
 
     self.resize(w.to_i, h.to_i) do |image|
-      puts image.nil? ? "resize() yielded nil" : "image yielded #{image.width} x #{image.height}"
       yield image
     end
   end
@@ -379,7 +378,7 @@ FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(output);
 if (fif == FIF_UNKNOWN) fif = FIX2INT(rb_iv_get(self, "@file_type"));
 if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting(fif)) {
 GET_BITMAP(bitmap);
-flags = fif == FIF_JPEG ? JPEG_QUALITYSUPERB : 0;
+flags = fif == FIF_JPEG ? JPEG_QUALITYGOOD : 0;
 BOOL result = 0, unload = 0;
 
 if (fif == FIF_PNG) FreeImage_DestroyICCProfile(bitmap);
